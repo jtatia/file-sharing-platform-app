@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="309.0" prefWidth="361.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="blockchain.sample.SampleController">
+   <children>
+      <Button fx:id="DO" layoutX="109.0" layoutY="62.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="143.0" onAction="#createDO" text="Data Owner" />
+      <Button fx:id="AA" layoutX="109.0" layoutY="176.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="143.0" onAction="#createAA" text="Attribute Authority" />
+   </children>
+</AnchorPane>

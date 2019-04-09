@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="596.0" prefWidth="452.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="blockchain.sample.NodeController">
+   <children>
+      <Label layoutX="164.0" layoutY="132.0" text="Upload File">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </Label>
+      <TextArea fx:id="textAccessPolicy" layoutX="162.0" layoutY="168.0" prefHeight="38.0" prefWidth="235.0" />
+      <Label layoutX="59.0" layoutY="180.0" text="Access Policy" />
+      <Button fx:id="uploadButton" layoutX="53.0" layoutY="229.0" mnemonicParsing="false" onAction="#uploadFile" prefHeight="38.0" prefWidth="100.0" text="Upload" />
+      <TextField fx:id="uploadFileId" layoutX="162.0" layoutY="230.0" prefHeight="38.0" prefWidth="213.0" promptText="FIle Id" />
+      <Label layoutX="164.0" layoutY="275.0" prefHeight="45.0" prefWidth="151.0" text="Download File">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <TextField fx:id="downloadFileId" layoutX="164.0" layoutY="328.0" prefHeight="38.0" prefWidth="213.0" promptText="File Id" />
+      <Button fx:id="downloadButton" layoutX="53.0" layoutY="328.0" mnemonicParsing="false" onAction="#downloadFile" prefHeight="38.0" prefWidth="100.0" text="Download" />
+      <Label layoutX="167.0" layoutY="386.0" text="Request Attributes">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="94.0" layoutY="436.0" text="AA ID" />
+      <Label layoutX="83.0" layoutY="492.0" text="Attribute" />
+      <Button fx:id="requestButton" layoutX="160.0" layoutY="536.0" mnemonicParsing="false" onAction="#requestAttribute" prefHeight="38.0" prefWidth="110.0" text="Request" />
+      <TextField fx:id="textAAId" layoutX="162.0" layoutY="425.0" prefHeight="38.0" prefWidth="197.0" />
+      <TextField fx:id="textAttribute" layoutX="162.0" layoutY="481.0" prefHeight="38.0" prefWidth="197.0" />
+      <Label layoutX="178.0" layoutY="14.0" text="Node">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </Label>
+      <Label layoutX="53.0" layoutY="55.0" text="Node Id: " />
+      <Label fx:id="labelNodeId" layoutX="121.0" layoutY="55.0" text="Label" />
+      <Label layoutX="233.0" layoutY="55.0" text="Name: " />
+      <Label fx:id="labelName" layoutX="298.0" layoutY="55.0" text="Label" />
+      <Label layoutX="53.0" layoutY="97.0" text="AttributeList: " />
+      <ScrollPane layoutX="162.0" layoutY="82.0" prefHeight="38.0" prefWidth="235.0" />
+      <TextArea fx:id="textAttributeList" layoutX="161.0" layoutY="80.0" prefHeight="38.0" prefWidth="235.0" />
+      <Button fx:id="refreshButton" layoutX="362.0" layoutY="14.0" mnemonicParsing="false" onAction="#refresh" text="Refresh" />
+   </children>
+</AnchorPane>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="320.0" prefWidth="360.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="blockchain.sample.AddAttributeAuthorityController">
+   <children>
+      <Label layoutX="66.0" layoutY="25.0" text="Register Attribute Authority">
+         <font>
+            <Font size="19.0" />
+         </font>
+      </Label>
+      <Label layoutX="84.0" layoutY="89.0" text="AA ID" />
+      <Label layoutX="84.0" layoutY="159.0" text="AA Name" />
+      <Button layoutX="159.0" layoutY="267.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="113.0" onAction="#createAA" text="Submit" />
+      <TextField fx:id="id" layoutX="159.0" layoutY="84.0" />
+      <TextField fx:id="name" layoutX="159.0" layoutY="154.0" />
+      <TextField fx:id="attr" layoutX="159.0" layoutY="217.0" />
+      <Label layoutX="82.0" layoutY="222.0" text="Attributes" />
+   </children>
+</AnchorPane>
