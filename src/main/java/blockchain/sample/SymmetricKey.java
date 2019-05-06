@@ -64,4 +64,7 @@ public class SymmetricKey {
         in.close();
     }
 
+    public String getKey() {
+        return  Base64.getEncoder().encodeToString(secretKey.getEncoded());
+    }
 }

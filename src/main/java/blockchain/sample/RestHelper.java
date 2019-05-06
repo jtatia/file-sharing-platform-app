@@ -74,10 +74,11 @@ public class RestHelper {
         HttpClient client = HttpClientBuilder.create().build();
         HttpPost post = new HttpPost(URL+"/Attribute");
 
+        Gson g = new Gson();
+
         List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
         urlParameters.add(new BasicNameValuePair("attrName", attribute.getAttrName()));
-        urlParameters.add(new BasicNameValuePair("pKey", attribute.getpKey()));
-        urlParameters.add(new BasicNameValuePair("sKey", attribute.getsKey()));
+        urlParameters.add(new BasicNameValuePair("pKey", g.toJson(attribute.getpKey())));
       //  urlParameters.add(new BasicNameValuePair("requesters", ""));
         post.setEntity(new UrlEncodedFormEntity(urlParameters));
 
@@ -244,5 +245,31 @@ public class RestHelper {
         JsonObject jo = (JsonObject)jp.parse(result.toString());
         Node f = gson.fromJson(jo, Node.class);
         return f;
+    }
+
+    public static Attribute getAttribute(String attr)throws Exception {
+        HttpClient client = HttpClientBuilder.create().build();
+        HttpGet request = new HttpGet(URL+"/Attribute/"+attr);
+
+        HttpResponse response = client.execute(request);
+
+        System.out.println("Response Code : "
+                + response.getStatusLine().getStatusCode());
+
+        BufferedReader rd = new BufferedReader(
+                new InputStreamReader(response.getEntity().getContent()));
+
+        StringBuffer result = new StringBuffer();
+        String line = "";
+        while ((line = rd.readLine()) != null) {
+            result.append(line);
+        }
+        System.out.println("GET::"+result.toString());
+        Gson gson = new Gson();
+        JsonParser jp = new JsonParser();
+        JsonObject jo = (JsonObject)jp.parse(result.toString());
+        Attribute attribute = gson.fromJson(jo, Attribute.class);
+        // System.out.println("FIleN OBject"+gson.toJson(f));
+        return attribute;
     }
 }

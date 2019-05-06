@@ -1,5 +1,6 @@
 package blockchain.sample;
 
+import sg.edu.ntu.sce.sands.crypto.dcpabe.AuthorityKeys;
 import sg.edu.ntu.sce.sands.crypto.dcpabe.key.PublicKey;
 import sg.edu.ntu.sce.sands.crypto.dcpabe.key.SecretKey;
 
@@ -10,6 +11,7 @@ public class AttributeAuthority {
     private String aId;
     private String aName;
     private ArrayList<Attribute> attributeList;
+    private AuthorityKeys authorityKeys;
     //private Map<String, PublicKey> publicKeys;
     //private Map<String, SecretKey> secretKeys;
 
@@ -40,21 +42,12 @@ public class AttributeAuthority {
     public void setAttributeList(ArrayList<Attribute> attributeList) {
         this.attributeList = attributeList;
     }
-/**
-    public Map<String, PublicKey> getPublicKeys() {
-        return publicKeys;
+
+    public AuthorityKeys getAuthorityKeys() {
+        return authorityKeys;
     }
 
-    public void setPublicKeys(Map<String, PublicKey> publicKeys) {
-        this.publicKeys = publicKeys;
+    public void setAuthorityKeys(AuthorityKeys authorityKeys) {
+        this.authorityKeys = authorityKeys;
     }
-
-    public Map<String, SecretKey> getSecretKeys() {
-        return secretKeys;
-    }
-
-    public void setSecretKeys(Map<String, SecretKey> secretKeys) {
-        this.secretKeys = secretKeys;
-    }
- */
 }

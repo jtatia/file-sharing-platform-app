@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextArea?>
@@ -8,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="596.0" prefWidth="452.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="blockchain.sample.NodeController">
+<AnchorPane prefHeight="596.0" prefWidth="452.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="blockchain.sample.NodeController">
    <children>
       <Label layoutX="164.0" layoutY="132.0" text="Upload File">
          <font>
@@ -49,5 +50,6 @@
       <ScrollPane layoutX="162.0" layoutY="82.0" prefHeight="38.0" prefWidth="235.0" />
       <TextArea fx:id="textAttributeList" layoutX="161.0" layoutY="80.0" prefHeight="38.0" prefWidth="235.0" />
       <Button fx:id="refreshButton" layoutX="362.0" layoutY="14.0" mnemonicParsing="false" onAction="#refresh" text="Refresh" />
+      <CheckBox fx:id="pkcheckbox" layoutX="386.0" layoutY="435.0" mnemonicParsing="false" text="PK" />
    </children>
 </AnchorPane>

@@ -1,10 +1,12 @@
 package blockchain.sample;
 
+import sg.edu.ntu.sce.sands.crypto.dcpabe.key.PublicKey;
+import sg.edu.ntu.sce.sands.crypto.dcpabe.key.SecretKey;
+
 public class Attribute {
 
     private  String attrName;
-    private  String pKey;
-    private  String sKey;
+    private PublicKey pKey;
 
     public Attribute() {
     }
@@ -17,19 +19,13 @@ public class Attribute {
         this.attrName = attrName;
     }
 
-    public String getpKey() {
+    public PublicKey getpKey() {
         return pKey;
     }
 
-    public void setpKey(String pKey) {
+    public void setpKey(PublicKey pKey) {
         this.pKey = pKey;
     }
 
-    public String getsKey() {
-        return sKey;
-    }
 
-    public void setsKey(String sKey) {
-        this.sKey = sKey;
-    }
 }

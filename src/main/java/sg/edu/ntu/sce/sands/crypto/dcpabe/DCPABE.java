@@ -1,5 +1,6 @@
 package sg.edu.ntu.sce.sands.crypto.dcpabe;
 
+import blockchain.sample.Attribute;
 import it.unisa.dia.gas.jpbc.Element;
 import it.unisa.dia.gas.jpbc.Pairing;
 import it.unisa.dia.gas.plaf.jpbc.pairing.PairingFactory;
@@ -126,11 +127,9 @@ public class DCPABE {
             c1x.setFromBytes(CT.getC1(x));
             t.mul(c1x.mul(p1).mul(p2.invert()));
         }
-
         Element c0 = pairing.getGT().newElement();
         c0.setFromBytes(CT.getC0());
         c0.mul(t.invert());
-
         return new Message(c0.toBytes());
     }
 
@@ -175,9 +174,62 @@ public class DCPABE {
 
     public static Message generateRandomMessage(GlobalParameters GP) {
         Pairing pairing = PairingFactory.getPairing(GP.getPairingParameters());
-
         Element M = pairing.getGT().newRandomElement().getImmutable();
 
         return new Message(M.toBytes());
     }
+
+    public static AuthorityKeys authoritySetup(String authorityID, GlobalParameters GP, ArrayList<String> attributes) {
+        AuthorityKeys authorityKeys = new AuthorityKeys(authorityID);
+
+        Pairing pairing = PairingFactory.getPairing(GP.getPairingParameters());
+        Element eg1g1 = pairing.pairing(GP.getG1(), GP.getG1()).getImmutable();
+        for (String attribute : attributes) {
+            Element ai = pairing.getZr().newRandomElement().getImmutable();
+            Element yi = pairing.getZr().newRandomElement().getImmutable();
+
+            authorityKeys.getPublicKeys().put(attribute, new PublicKey(
+                    eg1g1.powZn(ai).toBytes(),
+                    GP.getG1().powZn(yi).toBytes()));
+
+            authorityKeys.getSecretKeys().put(attribute, new SecretKey(ai.toBytes(), yi.toBytes()));
+        }
+        return authorityKeys;
+    }
+
+    public static Message decrypt(Ciphertext CT, PersonalKeys pks, GlobalParameters GP, AccessStructure as) {
+        List<Integer> toUse = as.getIndexesList(pks.getAttributes());
+
+        if (null == toUse || toUse.isEmpty()) throw new IllegalArgumentException("not satisfying");
+
+        Pairing pairing = PairingFactory.getPairing(GP.getPairingParameters());
+
+        Element HGID = pairing.getG1().newElement();
+        HGID.setFromHash(pks.getUserID().getBytes(), 0, pks.getUserID().getBytes().length);
+        HGID = HGID.getImmutable();
+
+        Element t = pairing.getGT().newOneElement();
+
+        for (Integer x : toUse) {
+            Element c3x = pairing.getG1().newElement();
+            c3x.setFromBytes(CT.getC3(x));
+            Element p1 = pairing.pairing(HGID, c3x);
+
+            Element key = pairing.getG1().newElement();
+            key.setFromBytes(pks.getKey(as.rho(x)).getKey());
+
+            Element c2x = pairing.getG1().newElement();
+            c2x.setFromBytes(CT.getC2(x));
+            Element p2 = pairing.pairing(key, c2x);
+
+            Element c1x = pairing.getGT().newElement();
+            c1x.setFromBytes(CT.getC1(x));
+            t.mul(c1x.mul(p1).mul(p2.invert()));
+        }
+        Element c0 = pairing.getGT().newElement();
+        c0.setFromBytes(CT.getC0());
+        c0.mul(t.invert());
+        return new Message(c0.toBytes());
+    }
+
 }

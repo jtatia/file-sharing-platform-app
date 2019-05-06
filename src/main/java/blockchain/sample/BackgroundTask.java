@@ -31,7 +31,7 @@ public class BackgroundTask implements Runnable {
                     if (AA.equals(attributeAuthority.getaId())) {
                         for (Attribute a : attributeAuthority.getAttributeList()) {
                             if (A.equals(a.getAttrName())) {
-                                skey = a.getsKey();
+                                skey = "";//CHAHCHACHA
                                 break;
                             }
                         }

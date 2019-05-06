@@ -13,7 +13,7 @@ public class Ciphertext implements Serializable {
     private List<byte[]> c1;
     private List<byte[]> c2;
     private List<byte[]> c3;
-    private AccessStructure accessStructure;
+//    private AccessStructure accessStructure;
 
     public Ciphertext() {
         c1 = new ArrayList<byte[]>();
@@ -53,11 +53,11 @@ public class Ciphertext implements Serializable {
         c3.add(c3x);
     }
 
-    public AccessStructure getAccessStructure() {
+ /**   public AccessStructure getAccessStructure() {
         return accessStructure;
     }
 
     public void setAccessStructure(AccessStructure accessStructure) {
         this.accessStructure = accessStructure;
-    }
+    }*/
 }

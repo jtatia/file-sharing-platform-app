@@ -14,7 +14,6 @@ public class GlobalParameters implements Serializable {
     private static final long serialVersionUID = 1L;
     private PairingParameters pairingParameters;
     private Element g1;
-
     public PairingParameters getPairingParameters() {
         return pairingParameters;
     }
