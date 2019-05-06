@@ -53,17 +53,16 @@ public class Testing {
         key = Helper.generateLengthMessage(98) + key;
      //   System.out.println(new String(key.getBytes()));
         Message message1 = new Message(key.getBytes());
-      //  System.out.println(new String(message1.m));
+        System.out.println(new String(message1.m));
        // System.out.println(message1.m.length);
         Ciphertext ct = DCPABE.encrypt(message1, as, gp, publicKeys);
         Gson g= new Gson();
         String x = g.toJson(ct);
         Ciphertext ciphertext = g.fromJson(x, Ciphertext.class);
-        System.out.println(ciphertext.toString());
-        Message dmessage = DCPABE.decrypt(ct, pkeys, gp, as);
-        //System.out.println(new String(dmessage.m).su.bstring(98));
-        ;
-    }
+        System.out.println(g.toJson(ciphertext));
+            Message dmessage = DCPABE.decrypt(ct, pkeys, gp, as);
+            System.out.println(new String(dmessage.m).substring(98));
+        }
 
     @Test
     public void generateTest() {
@@ -105,7 +104,7 @@ public class Testing {
         Message message = DCPABE.generateRandomMessage(gp);
         Ciphertext ct = DCPABE.encrypt(message, as, gp, publicKeys);
 
-        Message dMessage = DCPABE.decrypt(ct, pkeys, gp);
+        Message dMessage = DCPABE.decrypt(ct, pkeys, gp, as);
 
         System.out.println("M(" + message.m.length + ") = " + Arrays.toString(message.m));
         System.out.println("DM(" + dMessage.m.length + ") = " + Arrays.toString(dMessage.m));

@@ -76,10 +76,14 @@ public void back() {
                 GlobalParameters gp = Helper.getGlobalParams();
                 System.out.println("HERE::::::;;;::"+AA+" $$ "+N+" $$ "+A+"\n");
                 if (AA.equals(authority.getaId())) {
+                    //Verifying if attribute belongs to this authority. if yes generating corresponding
+                    //secret key for user N
                     for (Attribute a : authority.getAttributeList()) {
                         if (A.equals(a.getAttrName())) {
                             Gson g =new Gson();
-                            PersonalKey s = DCPABE.keyGen(N, a.getAttrName(), authority.getAuthorityKeys().getSecretKeys().get(a.getAttrName()), gp);
+                            PersonalKey s = DCPABE.keyGen(N, a.getAttrName(),
+                                    authority.getAuthorityKeys().getSecretKeys().get(a.getAttrName()),
+                                    gp);
                             skey = g.toJson(s);
                             break;
                         }

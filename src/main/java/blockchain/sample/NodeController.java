@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import sg.edu.ntu.sce.sands.crypto.dcpabe.*;
 import sg.edu.ntu.sce.sands.crypto.dcpabe.ac.AccessStructure;
+import sg.edu.ntu.sce.sands.crypto.dcpabe.key.PersonalKey;
 import sun.misc.BASE64Decoder;
 
 import java.io.File;
@@ -83,11 +84,12 @@ public class NodeController  {
         String paddedKey = Helper.generateLengthMessage(98)+symm;
         Message m = new Message(paddedKey.getBytes());
         Ciphertext ciphertext = DCPABE.encrypt(m, as, gp, pks);
+        Gson g = new Gson();
         FileN fileN = new FileN();
         fileN.setEncryptedHash(hash);
-        fileN.setEncryptedKey(symm);
+        fileN.setEncryptedKey(g.toJson(ciphertext));
         fileN.setFileId(String.valueOf((int)(Math.random()*1000)));
-        fileN.setSerializedAccessPolicy("NA");
+        fileN.setSerializedAccessPolicy(textAccessPolicy.getText());
         fileN.setOwner(node.getNodeId());
         fileN.setVersion("1");
         RestHelper.addFileN(fileN);
@@ -101,6 +103,17 @@ public class NodeController  {
         String string = executeCommands.execute("ipfs get "+fileN.getEncryptedHash());
         File f= new File(fileN.getEncryptedHash());
         SymmetricKey symmetricKey = new SymmetricKey("block",16,"AES");
+
+        Gson g = new Gson();
+        GlobalParameters gp = Helper.getGlobalParams();
+        AccessStructure as = AccessStructure.buildFromPolicy(fileN.getSerializedAccessPolicy());
+        Ciphertext ct = g.fromJson(fileN.getEncryptedKey(),Ciphertext.class);
+        PersonalKeys pkeys = new PersonalKeys(node.getNodeId());
+        for (String secretAttrKey : node.getAttributeKeyList()) {
+            pkeys.addKey(g.fromJson(secretAttrKey, PersonalKey.class));
+        }
+        Message dmessage = DCPABE.decrypt(ct, pkeys, gp, as);
+        String decryptedKey = new String(dmessage.m).substring(98);
         byte[] aesKey = Base64.getDecoder().decode(fileN.getEncryptedKey());
         symmetricKey.decryptFile(f,aesKey);
         System.out.println("Completed Process");

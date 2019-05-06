@@ -71,7 +71,7 @@ public class DCPABE {
             w.add(pairing.getZr().newRandomElement().getImmutable());
         }
 
-        ct.setAccessStructure(arho);
+//        ct.setAccessStructure(arho);
 
         ct.setC0(M.mul(eg1g1.powZn(s)).toBytes()); // C_0
 
@@ -98,40 +98,6 @@ public class DCPABE {
         return ct;
     }
 
-    public static Message decrypt(Ciphertext CT, PersonalKeys pks, GlobalParameters GP) {
-        List<Integer> toUse = CT.getAccessStructure().getIndexesList(pks.getAttributes());
-
-        if (null == toUse || toUse.isEmpty()) throw new IllegalArgumentException("not satisfying");
-
-        Pairing pairing = PairingFactory.getPairing(GP.getPairingParameters());
-
-        Element HGID = pairing.getG1().newElement();
-        HGID.setFromHash(pks.getUserID().getBytes(), 0, pks.getUserID().getBytes().length);
-        HGID = HGID.getImmutable();
-
-        Element t = pairing.getGT().newOneElement();
-
-        for (Integer x : toUse) {
-            Element c3x = pairing.getG1().newElement();
-            c3x.setFromBytes(CT.getC3(x));
-            Element p1 = pairing.pairing(HGID, c3x);
-
-            Element key = pairing.getG1().newElement();
-            key.setFromBytes(pks.getKey(CT.getAccessStructure().rho(x)).getKey());
-
-            Element c2x = pairing.getG1().newElement();
-            c2x.setFromBytes(CT.getC2(x));
-            Element p2 = pairing.pairing(key, c2x);
-
-            Element c1x = pairing.getGT().newElement();
-            c1x.setFromBytes(CT.getC1(x));
-            t.mul(c1x.mul(p1).mul(p2.invert()));
-        }
-        Element c0 = pairing.getGT().newElement();
-        c0.setFromBytes(CT.getC0());
-        c0.mul(t.invert());
-        return new Message(c0.toBytes());
-    }
 
     public static PersonalKey keyGen(String userID, String attribute, SecretKey sk, GlobalParameters GP) {
         Pairing pairing = PairingFactory.getPairing(GP.getPairingParameters());
@@ -196,6 +162,44 @@ public class DCPABE {
         }
         return authorityKeys;
     }
+
+    public static Message decrypt(Ciphertext CT, PersonalKeys pks, GlobalParameters GP) {
+        List<Integer> toUse = CT.getAccessStructure().getIndexesList(pks.getAttributes());
+
+        if (null == toUse || toUse.isEmpty()) throw new IllegalArgumentException("not satisfying");
+
+        Pairing pairing = PairingFactory.getPairing(GP.getPairingParameters());
+
+        Element HGID = pairing.getG1().newElement();
+        HGID.setFromHash(pks.getUserID().getBytes(), 0, pks.getUserID().getBytes().length);
+        HGID = HGID.getImmutable();
+
+        Element t = pairing.getGT().newOneElement();
+
+        for (Integer x : toUse) {
+            Element c3x = pairing.getG1().newElement();
+            c3x.setFromBytes(CT.getC3(x));
+            Element p1 = pairing.pairing(HGID, c3x);
+
+            Element key = pairing.getG1().newElement();
+            key.setFromBytes(pks.getKey(CT.getAccessStructure().rho(x)).getKey());
+
+            Element c2x = pairing.getG1().newElement();
+            c2x.setFromBytes(CT.getC2(x));
+            Element p2 = pairing.pairing(key, c2x);
+
+            Element c1x = pairing.getGT().newElement();
+            c1x.setFromBytes(CT.getC1(x));
+            t.mul(c1x.mul(p1).mul(p2.invert()));
+        }
+
+        Element c0 = pairing.getGT().newElement();
+        c0.setFromBytes(CT.getC0());
+        c0.mul(t.invert());
+
+        return new Message(c0.toBytes());
+    }
+
 
     public static Message decrypt(Ciphertext CT, PersonalKeys pks, GlobalParameters GP, AccessStructure as) {
         List<Integer> toUse = as.getIndexesList(pks.getAttributes());
