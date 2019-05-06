@@ -14,7 +14,7 @@ import sg.edu.ntu.sce.sands.crypto.dcpabe.key.SecretKey;
 
 import java.awt.event.ActionEvent;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 
 public class AttributeAuthorityController {
 
@@ -62,41 +62,46 @@ public class AttributeAuthorityController {
         th.start();
 }
 
-private int size =0;
-
-public void back() {
+    private Set<String> set = new LinkedHashSet<>();
+    public void back() {
     while (true) {
         try {
             ArrayList<RAT> arr = RestHelper.getRATransactions();
-            for (int i=size;i<arr.size();i++) {
+            for (int i=0;i<arr.size();i++) {
                 String AA  = arr.get(i).aAuthority.substring(arr.get(i).aAuthority.indexOf("#")+1);
                 String N = arr.get(i).node.substring(arr.get(i).node.indexOf("#")+1);
                 String A = arr.get(i).attribute.substring(arr.get(i).attribute.indexOf("#")+1);
-                String skey = "";
                 GlobalParameters gp = Helper.getGlobalParams();
-                System.out.println("HERE::::::;;;::"+AA+" $$ "+N+" $$ "+A+"\n");
+                if (set.contains(A+"$"+N))
+                    continue;
+                System.out.println("HERE::::::;;;::"+AA+"$$"+N+"$$"+A+"\n");
                 if (AA.equals(authority.getaId())) {
                     //Verifying if attribute belongs to this authority. if yes generating corresponding
                     //secret key for user N
                     for (Attribute a : authority.getAttributeList()) {
                         if (A.equals(a.getAttrName())) {
                             Gson g =new Gson();
-                            PersonalKey s = DCPABE.keyGen(N, a.getAttrName(),
-                                    authority.getAuthorityKeys().getSecretKeys().get(a.getAttrName()),
+
+                            PersonalKey s = DCPABE.keyGen(N, A,
+                                    authority.getAuthorityKeys().getSecretKeys().get(A),
                                     gp);
-                            skey = g.toJson(s);
+
+                            System.out.println(s.getAttribute());
+                            System.out.println(s.getKey());
+
+                            RestHelper.grantAttributeTransaction(N, authority.getaId(), g.toJson(s), A);
+
+                            set.add(A+"$"+N);
                             break;
                         }
                     }
-                    RestHelper.grantAttributeTransaction(N, authority.getaId(), skey, A);
                 }
-                size = arr.size();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         try {
-            Thread.sleep(3000);
+            Thread.sleep(4000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

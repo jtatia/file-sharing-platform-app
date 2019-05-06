@@ -1,5 +1,4 @@
-import blockchain.sample.Helper;
-import blockchain.sample.SymmetricKey;
+import blockchain.sample.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import it.unisa.dia.gas.jpbc.Element;
@@ -17,11 +16,14 @@ import sg.edu.ntu.sce.sands.crypto.dcpabe.key.PublicKey;
 import sg.edu.ntu.sce.sands.crypto.dcpabe.key.SecretKey;
 
 import javax.crypto.NoSuchPaddingException;
+import javax.xml.crypto.NodeSetData;
 import java.io.*;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -32,21 +34,40 @@ import static org.junit.Assert.assertTrue;
 public class Testing {
     @Test
     public void testDCPABE2() throws IOException, NoSuchPaddingException, NoSuchAlgorithmException {
+        Gson g= new Gson();
+
         GlobalParameters gp = DCPABE.globalSetup(160);
         PublicKeys publicKeys = new PublicKeys();
-        AuthorityKeys authority1 = DCPABE.authoritySetup("a1", gp, "a", "b");
+        AuthorityKeys authority1 = DCPABE.authoritySetup("a1", gp, new ArrayList<>(Arrays.asList("a","b")));
+        Attribute a1 = new Attribute();
+        a1.setAttrName("a");
+        a1.setpKey(authority1.getPublicKeys().get("a"));
+        Attribute a2 = new Attribute();
+        a2.setAttrName("b");
+        a2.setpKey(authority1.getPublicKeys().get("b"));
+        Map<String, PublicKey> map = new HashMap<>();
+        map.put(a1.getAttrName(),a1.getpKey());
+        map.put(a2.getAttrName(),a2.getpKey());
+        publicKeys.subscribeAuthority(map);
         publicKeys.subscribeAuthority(authority1.getPublicKeys());
         AuthorityKeys authority2 = DCPABE.authoritySetup("a2", gp, "c", "d");
         publicKeys.subscribeAuthority(authority2.getPublicKeys());
         PublicKey p = authority1.getPublicKeys().get("a");
-        PersonalKeys pkeys = new PersonalKeys("user");
-        SecretKey k = authority1.getSecretKeys().get("a");
-        pkeys.addKey(DCPABE.keyGen("user", "a", authority1.getSecretKeys().get("a"), gp));
-        pkeys.addKey(DCPABE.keyGen("user", "d", authority2.getSecretKeys().get("d"), gp));
+        Node node = new Node();
+        node.setNodeId("node1");
+        node.setName("Jai");
+        PersonalKeys pkeys = new PersonalKeys("node1");
 
-        AccessStructure as = AccessStructure.buildFromPolicy("and a or d and b c");
+        pkeys.addKey(g.fromJson(g.toJson(DCPABE.keyGen("node1", "b", authority1.getSecretKeys().get("b"), gp)),PersonalKey.class));
+        pkeys.addKey(g.fromJson(g.toJson(DCPABE.keyGen("node1", "d", authority2.getSecretKeys().get("d"), gp)), PersonalKey.class));
 
-        Message message = DCPABE.generateRandomMessage(gp);
+        PersonalKey personalKey = DCPABE.keyGen("node1","b",authority1.getSecretKeys().get("b"),gp);
+        System.out.println(personalKey.getKey());
+        System.out.println(g.fromJson(g.toJson(personalKey),PersonalKey.class).getKey());
+        AccessStructure as = AccessStructure.buildFromPolicy("b and d");
+        AccessStructure as1 = AccessStructure.buildFromPolicy("b and d");
+
+ //       Message message = DCPABE.generateRandomMessage(gp);
         SymmetricKey symmetricKey = new SymmetricKey("block",16, "AES");
         String key = symmetricKey.getKey();
      //   System.out.println(key.length());
@@ -55,12 +76,11 @@ public class Testing {
         Message message1 = new Message(key.getBytes());
         System.out.println(new String(message1.m));
        // System.out.println(message1.m.length);
-        Ciphertext ct = DCPABE.encrypt(message1, as, gp, publicKeys);
-        Gson g= new Gson();
+        Ciphertext ct = DCPABE.encrypt(message1, as1, gp, publicKeys);
         String x = g.toJson(ct);
         Ciphertext ciphertext = g.fromJson(x, Ciphertext.class);
         System.out.println(g.toJson(ciphertext));
-            Message dmessage = DCPABE.decrypt(ct, pkeys, gp, as);
+            Message dmessage = DCPABE.decrypt(ciphertext, pkeys, gp, as);
             System.out.println(new String(dmessage.m).substring(98));
         }
 
@@ -110,6 +130,17 @@ public class Testing {
         System.out.println("DM(" + dMessage.m.length + ") = " + Arrays.toString(dMessage.m));
 
         assertArrayEquals(message.m, dMessage.m);
+    }
+
+    @Test
+    public void testGEtNode()throws Exception {
+        Gson g = new Gson();
+        Node node = RestHelper.getNode("node3");
+        for (String secretAttrKey : node.getAttributeKeyList()) {
+            System.out.println(secretAttrKey);
+
+
+    }
     }
 
     @Test

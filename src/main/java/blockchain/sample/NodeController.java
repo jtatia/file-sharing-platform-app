@@ -14,6 +14,7 @@ import sun.misc.BASE64Decoder;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.ResourceBundle;
 
@@ -82,8 +83,12 @@ public class NodeController  {
         GlobalParameters gp = Helper.getGlobalParams();
         PublicKeys pks = Helper.getPublicKeys(node);
         String paddedKey = Helper.generateLengthMessage(98)+symm;
-        Message m = new Message(paddedKey.getBytes());
-        Ciphertext ciphertext = DCPABE.encrypt(m, as, gp, pks);
+        System.out.println(paddedKey);
+
+        Message message = new Message(paddedKey.getBytes());
+
+        Ciphertext ciphertext = DCPABE.encrypt(message, as, gp, pks);
+
         Gson g = new Gson();
         FileN fileN = new FileN();
         fileN.setEncryptedHash(hash);
@@ -105,23 +110,40 @@ public class NodeController  {
         SymmetricKey symmetricKey = new SymmetricKey("block",16,"AES");
 
         Gson g = new Gson();
+
         GlobalParameters gp = Helper.getGlobalParams();
+
         AccessStructure as = AccessStructure.buildFromPolicy(fileN.getSerializedAccessPolicy());
-        Ciphertext ct = g.fromJson(fileN.getEncryptedKey(),Ciphertext.class);
+
+        Ciphertext ct = g.fromJson(fileN.getEncryptedKey(), Ciphertext.class);
+
         PersonalKeys pkeys = new PersonalKeys(node.getNodeId());
+
         for (String secretAttrKey : node.getAttributeKeyList()) {
+            System.out.println(secretAttrKey);
             pkeys.addKey(g.fromJson(secretAttrKey, PersonalKey.class));
         }
+
         Message dmessage = DCPABE.decrypt(ct, pkeys, gp, as);
+
+        System.out.println(new String(dmessage.m));
+
         String decryptedKey = new String(dmessage.m).substring(98);
-        byte[] aesKey = Base64.getDecoder().decode(fileN.getEncryptedKey());
+        System.out.println(decryptedKey);
+        byte[] aesKey = Base64.getDecoder().decode(decryptedKey);
         symmetricKey.decryptFile(f,aesKey);
         System.out.println("Completed Process");
     }
     @FXML
     public void requestAttribute(ActionEvent actionEvent)throws Exception {
         if (pkcheckbox.isSelected()) {
-            node.getAttributePKList().add(RestHelper.getAttribute(textAttribute.getText()));
+            if (node.getAttributePKList().isEmpty()) {
+                ArrayList<Attribute> arrayList = new ArrayList<>();
+                arrayList.add(RestHelper.getAttribute(textAttribute.getText()));
+                node.setAttributePKList(arrayList);
+            } else {
+                node.getAttributePKList().add(RestHelper.getAttribute(textAttribute.getText()));
+            }
             textAAId.clear();
             textAttribute.clear();
         }
@@ -136,9 +158,10 @@ public class NodeController  {
     public void refresh(ActionEvent actionEvent)throws Exception {
         Node node1 = RestHelper.getNode(node.getNodeId());
         try {
-            node.setAttributePKList(node1.getAttributePKList());
-            node.setAttributeSKNameList(node1.getAttributeSKNameList());
-            textAttributeList.setText(node.getAttributeKeyList().toString());
+          //  node.setAttributePKList(node1.getAttributePKList());
+            node.setAttributList(node1.getAttributeList());
+            node.setAttributeKeyList(node1.getAttributeKeyList());
+            textAttributeList.setText(node.getAttributeList().toString());
         }catch (Exception e) {
             System.out.println("EXCEPTION");
             e.printStackTrace();

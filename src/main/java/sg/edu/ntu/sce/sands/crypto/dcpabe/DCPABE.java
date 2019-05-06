@@ -164,7 +164,8 @@ public class DCPABE {
     }
 
     public static Message decrypt(Ciphertext CT, PersonalKeys pks, GlobalParameters GP) {
-        List<Integer> toUse = CT.getAccessStructure().getIndexesList(pks.getAttributes());
+        AccessStructure a = AccessStructure.buildFromPolicy("dummy");
+        List<Integer> toUse = a.getIndexesList(pks.getAttributes());
 
         if (null == toUse || toUse.isEmpty()) throw new IllegalArgumentException("not satisfying");
 
@@ -182,7 +183,7 @@ public class DCPABE {
             Element p1 = pairing.pairing(HGID, c3x);
 
             Element key = pairing.getG1().newElement();
-            key.setFromBytes(pks.getKey(CT.getAccessStructure().rho(x)).getKey());
+            key.setFromBytes(pks.getKey(a.rho(x)).getKey());
 
             Element c2x = pairing.getG1().newElement();
             c2x.setFromBytes(CT.getC2(x));

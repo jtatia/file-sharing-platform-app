@@ -36,6 +36,9 @@ public class AddNodeController {
         Node node = new Node();
         node.setNodeId(labelId.getText());
         node.setName(labelName.getText());
+        node.setAttributePKList(new ArrayList<>());
+        node.setAttributeKeyList(new ArrayList<>());
+        node.setAttributList(new ArrayList<>());
         RestHelper.addNode(node);
         //Move to next scene
         Main.showNode(node);

@@ -9,6 +9,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
+import org.w3c.dom.Attr;
+import sg.edu.ntu.sce.sands.crypto.dcpabe.key.PublicKey;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -140,6 +142,7 @@ public class RestHelper {
         JsonParser jp = new JsonParser();
         JsonObject jo = (JsonObject)jp.parse(result.toString());
         FileN f = gson.fromJson(jo, FileN.class);
+        System.out.println(f.getEncryptedKey());
        // System.out.println("FIleN OBject"+gson.toJson(f));
         return f;
     }
@@ -268,8 +271,16 @@ public class RestHelper {
         Gson gson = new Gson();
         JsonParser jp = new JsonParser();
         JsonObject jo = (JsonObject)jp.parse(result.toString());
-        Attribute attribute = gson.fromJson(jo, Attribute.class);
+        Temp temp = gson.fromJson(jo, Temp.class);
+        Attribute attribute = new Attribute();
+        attribute.setAttrName(temp.attrName);
+        attribute.setpKey(gson.fromJson(temp.pKey, PublicKey.class));
         // System.out.println("FIleN OBject"+gson.toJson(f));
         return attribute;
+    }
+
+    public class Temp {
+        public String attrName;
+        public String pKey;
     }
 }

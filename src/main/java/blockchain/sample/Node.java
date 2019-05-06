@@ -9,7 +9,7 @@ public class Node {
     private String name;
 
     private ArrayList<Attribute> attributePKList;
-    private ArrayList<String> attributeSKNameList;
+    private ArrayList<String> attributeList;
 
     private ArrayList<String> attributeKeyList;
 
@@ -29,12 +29,12 @@ public class Node {
         this.name = name;
     }
 
-    public ArrayList<String> getAttributeSKNameList() {
-        return attributeSKNameList;
+    public ArrayList<String> getAttributeList() {
+        return attributeList;
     }
 
-    public void setAttributeSKNameList(ArrayList<String> attributeSKNameList) {
-        this.attributeSKNameList = attributeSKNameList;
+    public void setAttributList(ArrayList<String> attributeList) {
+        this.attributeList = attributeList;
     }
 
     public ArrayList<String> getAttributeKeyList() {

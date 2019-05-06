@@ -41,7 +41,7 @@ public class AddAttributeAuthorityController {
         AuthorityKeys authorityKeys = DCPABE.authoritySetup(authority.getaId(),
                 globalParameters, stringlist);
         authority.setAuthorityKeys(authorityKeys);
-        for (String a : attributes) {
+        for (String a : stringlist) {
             /**
              * Creating corresponding attributes objects
              */
