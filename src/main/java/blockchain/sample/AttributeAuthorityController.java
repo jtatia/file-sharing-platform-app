@@ -74,7 +74,7 @@ public class AttributeAuthorityController {
                 GlobalParameters gp = Helper.getGlobalParams();
                 if (set.contains(A+"$"+N))
                     continue;
-                System.out.println("HERE::::::;;;::"+AA+"$$"+N+"$$"+A+"\n");
+           //     System.out.println("HERE::::::;;;::"+AA+"$$"+N+"$$"+A+"\n");
                 if (AA.equals(authority.getaId())) {
                     //Verifying if attribute belongs to this authority. if yes generating corresponding
                     //secret key for user N

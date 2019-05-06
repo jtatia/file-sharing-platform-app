@@ -273,8 +273,8 @@ public class RestHelper {
         JsonObject jo = (JsonObject)jp.parse(result.toString());
         Temp temp = gson.fromJson(jo, Temp.class);
         Attribute attribute = new Attribute();
-        attribute.setAttrName(temp.attrName);
-        attribute.setpKey(gson.fromJson(temp.pKey, PublicKey.class));
+        attribute.setAttrName(temp.getAttrName());
+        attribute.setpKey(gson.fromJson(temp.getpKey(), PublicKey.class));
         // System.out.println("FIleN OBject"+gson.toJson(f));
         return attribute;
     }
@@ -282,5 +282,21 @@ public class RestHelper {
     public class Temp {
         public String attrName;
         public String pKey;
+
+        public String getAttrName() {
+            return attrName;
+        }
+
+        public void setAttrName(String attrName) {
+            this.attrName = attrName;
+        }
+
+        public String getpKey() {
+            return pKey;
+        }
+
+        public void setpKey(String pKey) {
+            this.pKey = pKey;
+        }
     }
 }

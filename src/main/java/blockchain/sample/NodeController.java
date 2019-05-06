@@ -82,7 +82,7 @@ public class NodeController  {
         AccessStructure as = AccessStructure.buildFromPolicy(accessPolicy);
         GlobalParameters gp = Helper.getGlobalParams();
         PublicKeys pks = Helper.getPublicKeys(node);
-        String paddedKey = Helper.generateLengthMessage(98)+symm;
+        String paddedKey = Helper.generateLengthMessage(61)+symm;
         System.out.println(paddedKey);
 
         Message message = new Message(paddedKey.getBytes());
@@ -125,10 +125,9 @@ public class NodeController  {
         }
 
         Message dmessage = DCPABE.decrypt(ct, pkeys, gp, as);
+        String  padded = new String(dmessage.m);
+        String decryptedKey = padded.substring(padded.length()-24);
 
-        System.out.println(new String(dmessage.m));
-
-        String decryptedKey = new String(dmessage.m).substring(98);
         System.out.println(decryptedKey);
         byte[] aesKey = Base64.getDecoder().decode(decryptedKey);
         symmetricKey.decryptFile(f,aesKey);
